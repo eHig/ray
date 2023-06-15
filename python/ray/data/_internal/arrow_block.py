@@ -451,6 +451,9 @@ class ArrowBlockAccessor(TableBlockAccessor):
             last_idx = idx
         partitions.append(table.slice(last_idx))
         return partitions
+    
+    def partition_by_key_hash(self, keys: List[str], output_num_blocks: int) -> List["Block"]:
+        raise NotImplementedError
 
     def combine(self, key: str, aggs: Tuple[AggregateFn]) -> Block:
         """Combine rows with the same key into an accumulator.

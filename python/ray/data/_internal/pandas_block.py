@@ -382,6 +382,20 @@ class PandasBlockAccessor(TableBlockAccessor):
         partitions.append(table[last_idx:])
         return partitions
 
+    def partition_by_key_hash(self, keys: List[str], output_num_blocks: int) -> List[Optional["Block"]]:
+        table: pandas.DataFrame = self._table
+        # filter out null keys
+        table = table[table[keys].notnull().all(axis=1)]
+        # hash the keys todo what hash function to use?
+        partition = table[keys].apply(lambda x: hash(tuple(x)) % output_num_blocks, axis=1)
+        res = [None for _ in range(output_num_blocks)]
+        for group, df in table.groupby(partition):
+            res[group] = df
+        return res
+
+
+
+
     def combine(self, key: str, aggs: Tuple[AggregateFn]) -> "pandas.DataFrame":
         """Combine rows with the same key into an accumulator.
 

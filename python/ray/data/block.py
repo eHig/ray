@@ -429,6 +429,9 @@ class BlockAccessor:
     ) -> List["Block"]:
         """Return a list of sorted partitions of this block."""
         raise NotImplementedError
+    
+    def partition_by_key_hash(keys: List[str], output_num_blocks: int) -> List["Block"]:
+        raise NotImplementedError
 
     def combine(self, key: Optional[str], agg: "AggregateFn") -> Block:
         """Combine rows with the same key into an accumulator."""
